@@ -1,0 +1,50 @@
+---
+# tasks file for mnn.nginx-pagespeed
+
+- name: Install apt requirements
+  apt: name={{ item }}
+  with_items:
+    - build-essential
+    - zlib1g-dev
+    - libpcre3
+    - libpcre3-dev
+    - unzip
+
+- name: Download nginx pagespeed module
+  get_url: url={{ nginx_pagespeed_url }}
+           dest=/tmp
+           mode=0440
+  register: pagespeed_file
+
+- name: unpack nginx pagespeed module
+  unarchive: copy=no
+             dest=/tmp/
+             src={{ pagespeed_file.dest }}
+
+- name: Download other thing
+  get_url: url={{ nginx_pagespeed_other_url }}
+           dest=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+  register: nginx_pagespeed_psol
+
+- name: unpack other thing
+  unarchive: copy=no
+             dest=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+             src={{ nginx_pagespeed_psol.dest }}
+
+- name: Download nginx
+  get_url: url={{ nginx_url }}
+           dest=/tmp
+  register: nginx_archive
+
+- name: Unpack Nginx
+  unarchive: copy=no
+             dest=/tmp/
+             src={{ nginx_archive.dest }}
+
+- name: Configure nginx
+  command: ./configure --add-module=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid
+           chdir=/tmp/nginx-{{ nginx_version }}
+
+- name: Install Nginx
+  shell: make && make install
+         chdir=/tmp/nginx-{{ nginx_version }}
