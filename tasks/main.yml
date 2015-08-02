@@ -45,6 +45,12 @@
   command: ./configure --add-module=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid
            chdir=/tmp/nginx-{{ nginx_version }}
 
+- name: Make sure nginx isn\'t running
+  service: name=nginx state=stopped
+
 - name: Install Nginx
   shell: make && make install
          chdir=/tmp/nginx-{{ nginx_version }}
+
+- name: Make sure nginx is running
+  service: name=nginx state=started enabled=yes
