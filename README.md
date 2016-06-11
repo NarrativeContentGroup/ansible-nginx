@@ -35,7 +35,12 @@ Including an example of how to use your role (for instance, with variables passe
          - role: mnn.nginx-pagespeed
            nginx_version: 1.10.1
            nginx_pagespeed_version: 1.9.32.14
+           nginx_build_options:
+               add-module: '{{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/'
+               with-http_stub_status_module:
 
+
+compiles nginx with pagespeed and http_stub_status_module options
 
 License
 -------
