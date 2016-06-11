@@ -1,2 +1,7 @@
 ---
-# handlers file for mnn.nginx-pagespeed
+
+- name: reload nginx
+  service: name=nginx state=reloaded enabled=yes
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes

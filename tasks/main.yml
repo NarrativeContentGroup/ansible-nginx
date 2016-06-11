@@ -64,7 +64,7 @@
   when: nginx_source_dl.changed
   register: nginx_source_unpack
 
-- name: Configure nginx
+- name: Configure Nginx source
   command: ./configure --add-module=/opt/nginx-pagespeed/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/ --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --with-http_stub_status_module
            chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
   when: nginx_pagespeed_module_unpack|changed or
@@ -76,11 +76,16 @@
   shell: make && make install
          chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
   when: nginx_configure|changed
-  register: nginx_install
+  notify: restart nginx
 
-- name: Restart Nginx
-  service: name=nginx state=restarted
-  when: nginx_install|changed
+- name: Install Nginx init script
+  copy: src=nginx.init
+        dest=/etc/init.d/nginx
+        mode=755
 
-- name: Make sure nginx is running
-  service: name=nginx state=started enabled=yes
+- name: Configure Nginx service
+  template: src=nginx.conf dest=/etc/nginx/nginx.conf
+
+- name: Create sites-enabled
+  file: state=directory
+        path=/etc/nginx/sites-enabled
