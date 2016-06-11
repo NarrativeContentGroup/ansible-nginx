@@ -10,63 +10,68 @@
     - libpcre3-dev
     - unzip
 
-- name: create build path
-  file: state=directory
-        path=/opt/nginx-pagespeed
+- block:
 
-- stat: path=/opt/nginx-pagespeed/{{ nginx_pagespeed_url|basename }}
-  register: nginx_pagespeed_module
+    - name: create build path
+      file: state=directory
+            path={{ nginx_build_dir }}
 
-- name: Download nginx pagespeed module
-  get_url: url={{ nginx_pagespeed_url }}
-           dest=/opt/nginx-pagespeed/
-           mode=0440
-  when: not nginx_pagespeed_module.stat.exists
-  register: nginx_pagespeed_module_dl
+    - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
+      register: nginx_pagespeed_module
 
-- name: unpack nginx pagespeed module
-  unarchive: copy=no
-             dest=/opt/nginx-pagespeed/
-             src={{ nginx_pagespeed_module_dl.dest }}
-  when: nginx_pagespeed_module_dl.changed
-  register: nginx_pagespeed_module_unpack
+    - name: Download nginx pagespeed module
+      get_url: url={{ nginx_pagespeed_url }}
+               dest={{ nginx_build_dir }}
+               mode=0440
 
-- stat: path=/opt/nginx-pagespeed/{{ nginx_pagespeed_other_url|basename }}
-  register: nginx_pagespeed_psol
+      when: not nginx_pagespeed_module.stat.exists
+      register: nginx_pagespeed_module_dl
 
-- name: Download other thing
-  get_url: url={{ nginx_pagespeed_other_url }}
-           dest=/opt/nginx-pagespeed/
+    - name: unpack nginx pagespeed module
+      unarchive: copy=no
+                 dest={{ nginx_build_dir }}/
+                 src={{ nginx_pagespeed_module_dl.dest }}
+      when: nginx_pagespeed_module_dl.changed
+      register: nginx_pagespeed_module_unpack
 
-  when: not nginx_pagespeed_psol.stat.exists
-  register: nginx_pagespeed_psol_dl
+    - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_other_url|basename }}
+      register: nginx_pagespeed_psol
 
-- name: unpack other thing
-  unarchive: copy=no
-             dest=/opt/nginx-pagespeed/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-             src={{ nginx_pagespeed_psol_dl.dest }}
-  when: nginx_pagespeed_psol_dl.changed
-  register: nginx_pagespeed_psol_unpack
+    - name: Download other thing
+      get_url: url={{ nginx_pagespeed_other_url }}
+               dest={{ nginx_build_dir }}
 
-- stat: path=/opt/nginx-pagespeed/{{ nginx_url|basename }}
+      when: not nginx_pagespeed_psol.stat.exists
+      register: nginx_pagespeed_psol_dl
+
+    - name: unpack other thing
+      unarchive: copy=no
+                 dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+                 src={{ nginx_pagespeed_psol_dl.dest }}
+      when: nginx_pagespeed_psol_dl.changed
+      register: nginx_pagespeed_psol_unpack
+
+  when: nginx_pagespeed_enabled
+
+- stat: path={{ nginx_build_dir }}/{{ nginx_url|basename }}
   register: nginx_source
 
 - name: Download nginx
   get_url: url={{ nginx_url }}
-           dest=/opt/nginx-pagespeed/
+           dest={{ nginx_build_dir }}
   register: nginx_source_dl
   when: not nginx_source.stat.exists
 
 - name: Unpack Nginx
   unarchive: copy=no
-             dest=/opt/nginx-pagespeed/
+             dest={{ nginx_build_dir }}
              src={{ nginx_source_dl.dest }}
   when: nginx_source_dl.changed
   register: nginx_source_unpack
 
 - name: Configure Nginx source
-  command: ./configure --add-module=/opt/nginx-pagespeed/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/ --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid --with-http_stub_status_module
-           chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
+  command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }}
+           chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_pagespeed_module_unpack|changed or
         nginx_pagespeed_psol_unpack|changed or
         nginx_source_unpack|changed
@@ -74,7 +79,7 @@
 
 - name: Install Nginx
   shell: make && make install
-         chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
+         chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_configure|changed
   notify: restart nginx
 

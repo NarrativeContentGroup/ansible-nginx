@@ -1,7 +1,11 @@
 ---
 # defaults file for mnn.nginx-pagespeed
 
+nginx_build_options:
+  add-module: '{{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/'
+  with-http_stub_status_module:
 nginx_pagespeed_version: 1.9.32.14
 nginx_user: www-data
 nginx_version: 1.8.0
 nginx_worker_processes: 2
+nginx_pagespeed_enabled: true
