@@ -10,47 +10,73 @@
     - libpcre3-dev
     - unzip
 
+- name: create build path
+  file: state=directory
+        path=/opt/nginx-pagespeed
+
+- stat: path=/opt/nginx-pagespeed/{{ nginx_pagespeed_url|basename }}
+  register: nginx_pagespeed_module
+
 - name: Download nginx pagespeed module
   get_url: url={{ nginx_pagespeed_url }}
-           dest=/tmp
+           dest=/opt/nginx-pagespeed/
            mode=0440
-  register: pagespeed_file
+  when: not nginx_pagespeed_module.stat.exists
+  register: nginx_pagespeed_module_dl
 
 - name: unpack nginx pagespeed module
   unarchive: copy=no
-             dest=/tmp/
-             src={{ pagespeed_file.dest }}
+             dest=/opt/nginx-pagespeed/
+             src={{ nginx_pagespeed_module_dl.dest }}
+  when: nginx_pagespeed_module_dl.changed
+  register: nginx_pagespeed_module_unpack
+
+- stat: path=/opt/nginx-pagespeed/{{ nginx_pagespeed_other_url|basename }}
+  register: nginx_pagespeed_psol
 
 - name: Download other thing
   get_url: url={{ nginx_pagespeed_other_url }}
-           dest=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-  register: nginx_pagespeed_psol
+           dest=/opt/nginx-pagespeed/
+
+  when: not nginx_pagespeed_psol.stat.exists
+  register: nginx_pagespeed_psol_dl
 
 - name: unpack other thing
   unarchive: copy=no
-             dest=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-             src={{ nginx_pagespeed_psol.dest }}
+             dest=/opt/nginx-pagespeed/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+             src={{ nginx_pagespeed_psol_dl.dest }}
+  when: nginx_pagespeed_psol_dl.changed
+  register: nginx_pagespeed_psol_unpack
+
+- stat: path=/opt/nginx-pagespeed/{{ nginx_url|basename }}
+  register: nginx_source
 
 - name: Download nginx
   get_url: url={{ nginx_url }}
-           dest=/tmp
-  register: nginx_archive
+           dest=/opt/nginx-pagespeed/
+  register: nginx_source_dl
+  when: not nginx_source.stat.exists
 
 - name: Unpack Nginx
   unarchive: copy=no
-             dest=/tmp/
-             src={{ nginx_archive.dest }}
+             dest=/opt/nginx-pagespeed/
+             src={{ nginx_source_dl.dest }}
+  when: nginx_source_dl.changed
+  register: nginx_source_unpack
 
 - name: Configure nginx
-  command: ./configure --add-module=/tmp/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid
-           chdir=/tmp/nginx-{{ nginx_version }}
-
-- name: Make sure nginx isn\'t running
-  service: name=nginx state=stopped
+  command: ./configure --add-module=/opt/nginx-pagespeed/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/ --prefix=/usr --conf-path=/etc/nginx/nginx.conf --http-log-path=/var/log/nginx/access.log --error-log-path=/var/log/nginx/error.log --lock-path=/var/lock/nginx.lock --pid-path=/run/nginx.pid
+           chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
+  when: nginx_pagespeed_module_unpack|changed or
+        nginx_pagespeed_psol_unpack|changed or
+        nginx_source_unpack|changed
+  register: nginx_configure
 
 - name: Install Nginx
   shell: make && make install
-         chdir=/tmp/nginx-{{ nginx_version }}
+         chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
+  when: nginx_configure|changed
+  notify: restart nginx
 
 - name: Make sure nginx is running
   service: name=nginx state=started enabled=yes

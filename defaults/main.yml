@@ -2,7 +2,7 @@
 # defaults file for mnn.nginx-pagespeed
 
 nginx_version: 1.8.0
-nginx_pagespeed_version: 1.9.32.3
+nginx_pagespeed_version: 1.9.32.14
 nginx_pagespeed_url: https://github.com/pagespeed/ngx_pagespeed/archive/release-{{ nginx_pagespeed_version }}-beta.zip
 nginx_pagespeed_other_url: https://dl.google.com/dl/page-speed/psol/{{ nginx_pagespeed_version }}.tar.gz
 nginx_url: http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz
