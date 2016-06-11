@@ -13,6 +13,7 @@ N/A
 Role Variables
 --------------
 
+nginx_pagespeed_enabled -- optionally build nginx pagespeed module
 nginx_pagespeed_version -- version of pagespeed to download and compile
 nginx_user -- user to run nginx service as
 nginx_version -- version of nginx to download and compile
