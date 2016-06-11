@@ -1,7 +1,7 @@
 nginx-pagespeed
 =========
 
-Installs the pagespeed module for Nginx.
+Compiles Nginx, optionally builds pagespeed module.
 
 
 Requirements
@@ -13,14 +13,16 @@ N/A
 Role Variables
 --------------
 
-nginx_version -- version of nginx to compile
-nginx_pagespeed_version -- version of pagespeed module to install
+nginx_pagespeed_version -- version of pagespeed to download and compile
+nginx_user -- user to run nginx service as
+nginx_version -- version of nginx to download and compile
+nginx_worker_processes -- number of worker processes to start
 
 
 Dependencies
 ------------
 
-mnn.nginx -- for handlers and init script.
+N/A
 
 
 Example Playbook
@@ -30,10 +32,10 @@ Including an example of how to use your role (for instance, with variables passe
 
     - hosts: web_server
       roles:
-         - role: mnn.nginx
          - role: mnn.nginx-pagespeed
            nginx_version: 1.10.1
            nginx_pagespeed_version: 1.9.32.14
+
 
 License
 -------
