@@ -76,7 +76,11 @@
   shell: make && make install
          chdir=/opt/nginx-pagespeed/nginx-{{ nginx_version }}
   when: nginx_configure|changed
-  notify: restart nginx
+  register: nginx_install
+
+- name: Restart Nginx
+  service: name=nginx state=restarted
+  when: nginx_install|changed
 
 - name: Make sure nginx is running
   service: name=nginx state=started enabled=yes
