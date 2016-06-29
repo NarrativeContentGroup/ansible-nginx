@@ -1,7 +1,7 @@
 ---
 # vars file for mnn.nginx-pagespeed
 
-nginx_build_dir: /opt/nginx/
+nginx_build_dir: /opt/nginx
 nginx_build_options_defaults:
   prefix: '/usr'
   conf-path: '/etc/nginx/nginx.conf'

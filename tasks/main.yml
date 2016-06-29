@@ -10,46 +10,46 @@
     - libpcre3-dev
     - unzip
 
+- name: create build path
+  file: state=directory
+        path={{ nginx_build_dir }}
+
 - block:
 
-    - name: create build path
-      file: state=directory
-            path={{ nginx_build_dir }}
+  - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
+    register: nginx_pagespeed_module
 
-    - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
-      register: nginx_pagespeed_module
+  - name: Download nginx pagespeed module
+    get_url: url={{ nginx_pagespeed_url }}
+             dest={{ nginx_build_dir }}
+             mode=0440
 
-    - name: Download nginx pagespeed module
-      get_url: url={{ nginx_pagespeed_url }}
-               dest={{ nginx_build_dir }}
-               mode=0440
+    when: not nginx_pagespeed_module.stat.exists
+    register: nginx_pagespeed_module_dl
 
-      when: not nginx_pagespeed_module.stat.exists
-      register: nginx_pagespeed_module_dl
+  - name: unpack nginx pagespeed module
+    unarchive: copy=no
+               dest={{ nginx_build_dir }}/
+               src={{ nginx_pagespeed_module_dl.dest }}
+    when: nginx_pagespeed_module_dl.changed
+    register: nginx_pagespeed_module_unpack
 
-    - name: unpack nginx pagespeed module
-      unarchive: copy=no
-                 dest={{ nginx_build_dir }}/
-                 src={{ nginx_pagespeed_module_dl.dest }}
-      when: nginx_pagespeed_module_dl.changed
-      register: nginx_pagespeed_module_unpack
+  - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_other_url|basename }}
+    register: nginx_pagespeed_psol
 
-    - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_other_url|basename }}
-      register: nginx_pagespeed_psol
+  - name: Download other thing
+    get_url: url={{ nginx_pagespeed_other_url }}
+             dest={{ nginx_build_dir }}
 
-    - name: Download other thing
-      get_url: url={{ nginx_pagespeed_other_url }}
-               dest={{ nginx_build_dir }}
+    when: not nginx_pagespeed_psol.stat.exists
+    register: nginx_pagespeed_psol_dl
 
-      when: not nginx_pagespeed_psol.stat.exists
-      register: nginx_pagespeed_psol_dl
-
-    - name: unpack other thing
-      unarchive: copy=no
-                 dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-                 src={{ nginx_pagespeed_psol_dl.dest }}
-      when: nginx_pagespeed_psol_dl.changed
-      register: nginx_pagespeed_psol_unpack
+  - name: unpack other thing
+    unarchive: copy=no
+               dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+               src={{ nginx_pagespeed_psol_dl.dest }}
+    when: nginx_pagespeed_psol_dl.changed
+    register: nginx_pagespeed_psol_unpack
 
   when: nginx_pagespeed_enabled
 
@@ -69,12 +69,24 @@
   when: nginx_source_dl.changed
   register: nginx_source_unpack
 
+- debug: var=nginx_pagespeed_enabled
+
+- name: Configure Nginx source
+  command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --add-module {{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta
+           chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
+  when: nginx_pagespeed_enabled and
+        (nginx_pagespeed_module_unpack|changed or
+        nginx_pagespeed_psol_unpack|changed or
+        nginx_source_unpack|changed)
+  register: nginx_configure
+
 - name: Configure Nginx source
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }}
            chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
-  when: nginx_pagespeed_module_unpack|changed or
+  when: not nginx_pagespeed_enabled and
+        (nginx_pagespeed_module_unpack|changed or
         nginx_pagespeed_psol_unpack|changed or
-        nginx_source_unpack|changed
+        nginx_source_unpack|changed)
   register: nginx_configure
 
 - name: Install Nginx
@@ -87,6 +99,10 @@
   copy: src=nginx.init
         dest=/etc/init.d/nginx
         mode=755
+
+- name: Create nginx etc dir
+  file: path=/etc/nginx
+        state=directory
 
 - name: Configure Nginx service
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
