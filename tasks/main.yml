@@ -72,13 +72,13 @@
 - debug: var=nginx_pagespeed_enabled
 
 - name: Configure Nginx source
-  command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --add-module {{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta
+  command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --add-module={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta
            chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_pagespeed_enabled and
         (nginx_pagespeed_module_unpack|changed or
         nginx_pagespeed_psol_unpack|changed or
         nginx_source_unpack|changed)
-  register: nginx_configure
+  register: nginx_configure_pagespeed
 
 - name: Configure Nginx source
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }}
@@ -92,7 +92,7 @@
 - name: Install Nginx
   shell: make && make install
          chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
-  when: nginx_configure|changed
+  when: nginx_configure|changed or nginx_configure_pagespeed|changed
   notify: restart nginx
 
 - name: Install Nginx init script
