@@ -7,9 +7,9 @@ galaxy_info:
   license: MIT
   min_ansible_version: 2.1
   platforms:
-- name: Ubuntu
-  versions:
-   - trusty
+    - name: Ubuntu
+      versions:
+        - trusty
   categories:
   - cloud
   - cloud:ec2
