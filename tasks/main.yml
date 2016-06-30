@@ -34,22 +34,22 @@
     when: nginx_pagespeed_module_dl.changed
     register: nginx_pagespeed_module_unpack
 
-  - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_other_url|basename }}
-    register: nginx_pagespeed_psol
+  - stat: path={{ nginx_build_dir }}/{{ nginx_psol_url|basename }}
+    register: nginx_psol
 
-  - name: Download other thing
-    get_url: url={{ nginx_pagespeed_other_url }}
+  - name: Download PSOL
+    get_url: url={{ nginx_psol_url }}
              dest={{ nginx_build_dir }}
 
-    when: not nginx_pagespeed_psol.stat.exists
-    register: nginx_pagespeed_psol_dl
+    when: not nginx_psol.stat.exists
+    register: nginx_psol_dl
 
-  - name: unpack other thing
+  - name: unpack PSOL
     unarchive: copy=no
                dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-               src={{ nginx_pagespeed_psol_dl.dest }}
-    when: nginx_pagespeed_psol_dl.changed
-    register: nginx_pagespeed_psol_unpack
+               src={{ nginx_psol_dl.dest }}
+    when: nginx_psol_dl.changed
+    register: nginx_psol_unpack
 
   when: nginx_pagespeed_enabled
 
@@ -74,7 +74,7 @@
            chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_pagespeed_enabled and
         (nginx_pagespeed_module_unpack|changed or
-        nginx_pagespeed_psol_unpack|changed or
+        nginx_psol_unpack|changed or
         nginx_source_unpack|changed)
   register: nginx_configure_pagespeed
 
@@ -82,9 +82,7 @@
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro'
            chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: not nginx_pagespeed_enabled and
-        (nginx_pagespeed_module_unpack|changed or
-        nginx_pagespeed_psol_unpack|changed or
-        nginx_source_unpack|changed)
+        nginx_source_unpack|changed
   register: nginx_configure
 
 - name: Install Nginx
