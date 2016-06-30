@@ -11,7 +11,7 @@
 ### END INIT INFO
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
-DAEMON=/usr/sbin/nginx
+DAEMON={{ nginx_prefix }}/sbin/nginx
 NAME=nginx
 DESC=nginx
 
@@ -26,7 +26,7 @@ test -x $DAEMON || exit 0
 . /lib/lsb/init-functions
 
 # Try to extract nginx pidfile
-PID=$(cat /etc/nginx/nginx.conf | grep -Ev '^\s*#' | awk 'BEGIN { RS="[;{}]" } { if ($1 == "pid") print $2 }' | head -n1)
+PID=$(cat {{ nginx_conf_path }} | grep -Ev '^\s*#' | awk 'BEGIN { RS="[;{}]" } { if ($1 == "pid") print $2 }' | head -n1)
 if [ -z "$PID" ]
 then
 	PID=/run/nginx.pid

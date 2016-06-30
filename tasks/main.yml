@@ -94,13 +94,16 @@
   notify: restart nginx
 
 - name: Install Nginx init script
-  copy: src=nginx.init
-        dest=/etc/init.d/nginx
-        mode=755
+  template: src=nginx.init
+            dest=/etc/init.d/nginx
+            mode=755
 
-- name: Create nginx etc dir
-  file: path=/etc/nginx
+- name: Create required nginx dirs
+  file: path={{ item }}
         state=directory
+  with_items:
+    - /etc/nginx
+    - /var/lib/nginx
 
 - name: Configure Nginx service
   template: src=nginx.conf dest=/etc/nginx/nginx.conf

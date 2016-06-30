@@ -1,18 +1,24 @@
 ---
 # defaults file for mnn.nginx-pagespeed
 
+nginx_conf_path: /etc/nginx/nginx.conf
+nginx_lib_path: /var/lib/nginx
+nginx_lock_file: /var/lock/nginx.lock
+nginx_log_path: /var/log/nginx
+nginx_prefix: /usr/local
+
 nginx_build_options:
-  conf-path: /etc/nginx/nginx.conf
-  error-log-path: /var/log/nginx/error.log
-  http-client-body-temp-path: /var/lib/nginx/body
-  http-fastcgi-temp-path: /var/lib/nginx/fastcgi
-  http-proxy-temp-path: /var/lib/nginx/proxy
-  http-scgi-temp-path: /var/lib/nginx/scgi
-  http-uwsgi-temp-path: /var/lib/nginx/uwsgi
-  http-log-path: /var/log/nginx/access.log
+  conf-path: "{{ nginx_conf_path }}"
+  error-log-path: "{{ nginx_log_path }}/error.log"
+  http-client-body-temp-path: "{{ nginx_lib_path }}/body"
+  http-fastcgi-temp-path: "{{ nginx_lib_path }}/fastcgi"
+  http-proxy-temp-path: "{{ nginx_lib_path }}/proxy"
+  http-scgi-temp-path: "{{ nginx_lib_path }}/scgi"
+  http-uwsgi-temp-path: "{{ nginx_lib_path }}/uwsgi"
+  http-log-path: "{{ nginx_log_path }}/access.log"
   lock-path: /var/lock/nginx.lock
   pid-path: /run/nginx.pid
-  prefix: /usr/local
+  prefix: "{{ nginx_prefix }}"
   with-http_gzip_static_module:
   with-http_realip_module:
   with-http_stub_status_module:
