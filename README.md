@@ -1,4 +1,6 @@
-nginx-pagespeed
+[![Travis CI](http://img.shields.io/travis/MotherNatureNetwork/ansible-nginx.svg?style=flat)](http://travis-ci.org/MotherNatureNetwork/ansible-nginx) [![test-suite](http://img.shields.io/badge/test--suite-ansible--nginx-blue.svg?style=flat)](https://github.com/MotherNatureNetwork/ansible-role-tests/tree/master/ansible-nginx/) [![Ansible Galaxy](http://img.shields.io/badge/galaxy-bigjust.nginx-660198.svg?style=flat)](https://galaxy.ansible.com/list#/roles/3059)
+
+nginx
 =========
 
 Compiles Nginx, optionally builds pagespeed module.
