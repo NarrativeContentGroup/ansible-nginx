@@ -5,6 +5,7 @@ nginx_conf_path: /etc/nginx/nginx.conf
 nginx_lib_path: /var/lib/nginx
 nginx_lock_file: /var/lock/nginx.lock
 nginx_log_path: /var/log/nginx
+nginx_pid_file: /run/nginx.pid
 nginx_prefix: /usr/local
 
 nginx_build_options:

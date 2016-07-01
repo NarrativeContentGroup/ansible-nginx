@@ -18,4 +18,20 @@ galaxy_info:
   - packaging
   - system
   - web
-dependencies: []
+
+dependencies:
+  - role: nickhammond.logrotate
+    sudo: true
+    logrotate_scripts:
+      - name: nginx
+        path: "{{ nginx_log_path }}/*.log"
+        options:
+          - daily
+          - rotate 7
+          - missingok
+          - compress
+          - delaycompress
+          - copytruncate
+          - sharedscripts
+        scripts:
+          postrotate: "[ -s /{{ nginx_pid_file }} ] && kill -USR1 `cat {{ nginx_pid_file }}`"

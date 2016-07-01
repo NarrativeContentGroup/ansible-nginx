@@ -11,7 +11,7 @@ nginx_build_options_defaults:
   http-uwsgi-temp-path: "{{ nginx_lib_path }}/uwsgi"
   http-log-path: "{{ nginx_log_path }}/access.log"
   lock-path: /var/lock/nginx.lock
-  pid-path: /run/nginx.pid
+  pid-path: "{{ nginx_pid_file }}"
   prefix: "{{ nginx_prefix }}"
 
 
