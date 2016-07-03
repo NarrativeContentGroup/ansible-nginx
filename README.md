@@ -60,7 +60,7 @@ standard install
 
     - hosts: web_servers
       roles:
-         - role: mnn.nginx-pagespeed
+         - role: ncg.nginx
            nginx_pagespeed_enabled: no
            nginx_version: 1.10.1
 
