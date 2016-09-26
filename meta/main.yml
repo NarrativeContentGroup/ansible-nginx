@@ -21,7 +21,7 @@ galaxy_info:
 
 dependencies:
   - role: nickhammond.logrotate
-    sudo: true
+    become: yes
     logrotate_scripts:
       - name: nginx
         path: "{{ nginx_log_path }}/*.log"
