@@ -3,6 +3,7 @@
 
 nginx_build_dir: /opt/nginx
 nginx_build_options_defaults:
+  conf-path: "{{ nginx_conf_path }}"
   error-log-path: "{{ nginx_log_path }}/error.log"
   http-client-body-temp-path: "{{ nginx_lib_path }}/body"
   http-fastcgi-temp-path: "{{ nginx_lib_path }}/fastcgi"
