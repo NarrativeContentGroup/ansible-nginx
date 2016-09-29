@@ -94,7 +94,7 @@
 - name: Install Nginx init script
   template: src=nginx.init
             dest=/etc/init.d/nginx
-            mode=755
+            mode=0755
 
 - name: Create required nginx dirs
   file: path={{ item }}
