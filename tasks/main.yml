@@ -16,7 +16,8 @@
 
 - block:
 
-  - stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
+  - name: check nginx pagespeed directory
+    stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
     register: nginx_pagespeed_module
 
   - name: Download nginx pagespeed module
@@ -34,17 +35,18 @@
     when: nginx_pagespeed_module_dl.changed
     register: nginx_pagespeed_module_unpack
 
-  - stat: path={{ nginx_build_dir }}/{{ nginx_psol_url|basename }}
+  - name: check nginx psol directory
+    stat: path={{ nginx_build_dir }}/{{ nginx_psol_url|basename }}
     register: nginx_psol
 
-  - name: Download PSOL
+  - name: download pagespeed library
     get_url: url={{ nginx_psol_url }}
              dest={{ nginx_build_dir }}
 
     when: not nginx_psol.stat.exists
     register: nginx_psol_dl
 
-  - name: unpack PSOL
+  - name: unpack pagespeed library
     unarchive: copy=no
                dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
                src={{ nginx_psol_dl.dest }}
@@ -53,7 +55,8 @@
 
   when: nginx_pagespeed_enabled
 
-- stat: path={{ nginx_build_dir }}/{{ nginx_url|basename }}
+- name: check nginx build directory
+  stat: path={{ nginx_build_dir }}/{{ nginx_url|basename }}
   register: nginx_source
 
 - name: Download nginx
