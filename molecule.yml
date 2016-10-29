@@ -25,7 +25,6 @@ verifier:
   name: testinfra
 
 ansible:
-  requirements_file: requirements.yml
 
   host_vars:
     mnn.nginx-01:
