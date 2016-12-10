@@ -17,7 +17,7 @@ Role Variables
 
 see defaults/main.yml, also:
 
-    nginx_pagespeed_enabled: true (also build and configure pagespeed module)
+    nginx_pagespeed_enabled: false
     nginx_pagespeed_version: 1.11.33.2
     nginx_version: 1.10.1
     nginx_worker_processes: 2
@@ -61,7 +61,7 @@ standard install
     - hosts: web_servers
       roles:
          - role: ncg.nginx
-           nginx_pagespeed_enabled: no
+           nginx_pagespeed_enabled: yes
            nginx_version: 1.10.1
 
 compiles nginx with pagespeed and http_stub_status_module options
