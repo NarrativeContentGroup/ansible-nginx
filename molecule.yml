@@ -1,12 +1,23 @@
 ---
+molecule:
+  test:
+    sequence:
+      - destroy
+      - syntax
+      - create
+      - converge
+      - verify
+
 driver:
   name: vagrant
 
 vagrant:
   platforms:
     - name: trusty64
-      box: trusty64
-      box_url: https://vagrantcloud.com/ubuntu/boxes/trusty64/versions/14.04/providers/virtualbox.box
+      box: ncg/trusty64
+
+    - name: xenial64
+      box: ncg/xenial64
 
   providers:
     - name: virtualbox
@@ -16,16 +27,22 @@ vagrant:
         cpus: 2
 
   instances:
+    - name: mnn.nginx-01
+      ansible_groups:
+        - pagespeed
 
-      - name: mnn.nginx-01
-      - name: mnn.nginx-02
-
+    - name: mnn.nginx-02
+      ansible_groups:
+        - not_pagespeed
 
 verifier:
   name: testinfra
 
 ansible:
 
-  host_vars:
-    mnn.nginx-01:
-      - nginx_pagespeed_enabled: False
+  group_vars:
+    pagespeed:
+      - nginx_pagespeed_enabled: true
+
+    not_pagespeed:
+      - nginx_pagespeed_enabled: false

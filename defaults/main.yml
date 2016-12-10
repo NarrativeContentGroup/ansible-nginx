@@ -7,6 +7,7 @@ nginx_lock_file: /var/lock/nginx.lock
 nginx_log_path: /var/log/nginx
 nginx_pid_file: /run/nginx.pid
 nginx_prefix: /usr/local
+nginx_bin: "{{ nginx_prefix }}/sbin/nginx"
 
 nginx_build_options:
   with-http_gzip_static_module:
