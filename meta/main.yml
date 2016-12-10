@@ -36,4 +36,4 @@ dependencies:
           - copytruncate
           - sharedscripts
         scripts:
-          postrotate: "[ -s /{{ nginx_pid_file }} ] && kill -USR1 `cat {{ nginx_pid_file }}`"
+          postrotate: "[ -s {{ nginx_pid_file }} ] && kill -USR1 `cat {{ nginx_pid_file }}`"
