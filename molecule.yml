@@ -32,8 +32,6 @@ vagrant:
         - pagespeed
 
     - name: mnn.nginx-02
-      ansible_groups:
-        - not_pagespeed
 
 verifier:
   name: testinfra
@@ -43,6 +41,3 @@ ansible:
   group_vars:
     pagespeed:
       - nginx_pagespeed_enabled: true
-
-    not_pagespeed:
-      - nginx_pagespeed_enabled: false
