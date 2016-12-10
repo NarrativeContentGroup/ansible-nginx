@@ -2,6 +2,16 @@
 
 - name: reload nginx
   service: name=nginx state=reloaded enabled=yes
+  when: ansible_distribution_release == 'trusty'
+
+- name: reload nginx - xenial
+  systemd: name=nginx state=reloaded enabled=yes
+  when: ansible_distribution_release == 'xenial'
 
 - name: restart nginx
   service: name=nginx state=restarted enabled=yes
+  when: ansible_distribution_release == 'trusty'
+
+- name: restart nginx - xenial
+  systemd: name=nginx state=restarted enabled=yes
+  when: ansible_distribution_release == 'xenial'

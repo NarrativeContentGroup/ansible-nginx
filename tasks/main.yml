@@ -92,7 +92,9 @@
   shell: make && make install
          chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_configure|changed or nginx_configure_pagespeed|changed
-  notify: restart nginx
+  notify:
+    - restart nginx
+    - restart nginx - xenial
 
 - name: Install Nginx init script
   template: src=nginx.init
