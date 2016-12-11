@@ -1,6 +1,7 @@
 *.pyc
 
-# Moleclue
+# Molecule
+.cache
 .molecule
 .vagrant
 tests/.cache/
