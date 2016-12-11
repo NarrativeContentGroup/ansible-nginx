@@ -108,7 +108,7 @@
     - /etc/nginx
     - /var/lib/nginx
 
-- name: Configure Nginx service
+- name: Configure Nginx
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
 
 - name: Configure Nginx init (systemd)
