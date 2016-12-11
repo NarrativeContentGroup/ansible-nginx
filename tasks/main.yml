@@ -110,9 +110,8 @@
 
 - name: Configure Nginx service
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
-  when: ansible_distribution_release == 'trusty'
 
-- name: Configure Nginx service (systemd)
+- name: Configure Nginx init (systemd)
   template: src=nginx.service dest=/lib/systemd/system/nginx.service
   when: ansible_distribution_release == 'xenial'
 
