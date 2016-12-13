@@ -1,7 +1,8 @@
 ---
-# tasks file for mnn.nginx-pagespeed
+# tasks file for mnn.nginx
 
 - name: Install apt requirements
+  become: yes
   apt: name={{ item }} update_cache=yes
   with_items:
     - build-essential
@@ -11,8 +12,11 @@
     - unzip
 
 - name: create build path
+  become: yes
   file: state=directory
         path={{ nginx_build_dir }}
+        owner={{ ansible_ssh_user }}
+        group={{ ansible_ssh_user }}
 
 - block:
 
@@ -89,6 +93,7 @@
   register: nginx_configure
 
 - name: Install Nginx
+  become: yes
   shell: make && make install
          chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_configure|changed or nginx_configure_pagespeed|changed
@@ -97,11 +102,13 @@
     - restart nginx - xenial
 
 - name: Install Nginx init script
+  become: yes
   template: src=nginx.init
             dest=/etc/init.d/nginx
             mode=0755
 
 - name: Create required nginx dirs
+  become: yes
   file: path={{ item }}
         state=directory
   with_items:
@@ -109,12 +116,15 @@
     - /var/lib/nginx
 
 - name: Configure Nginx
+  become: yes
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
 
 - name: Configure Nginx init (systemd)
+  become: yes
   template: src=nginx.service dest=/lib/systemd/system/nginx.service
   when: ansible_distribution_release == 'xenial'
 
 - name: Create sites-enabled
+  become: yes
   file: state=directory
         path=/etc/nginx/sites-enabled

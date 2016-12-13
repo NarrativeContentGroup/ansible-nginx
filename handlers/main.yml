@@ -1,17 +1,21 @@
 ---
 
 - name: reload nginx
+  become: yes
   service: name=nginx state=reloaded enabled=yes
   when: ansible_distribution_release == 'trusty'
 
 - name: reload nginx - xenial
+  become: yes
   systemd: name=nginx state=reloaded enabled=yes
   when: ansible_distribution_release == 'xenial'
 
 - name: restart nginx
+  become: yes
   service: name=nginx state=restarted enabled=yes
   when: ansible_distribution_release == 'trusty'
 
 - name: restart nginx - xenial
+  become: yes
   systemd: name=nginx state=restarted enabled=yes
   when: ansible_distribution_release == 'xenial'

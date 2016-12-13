@@ -12,12 +12,18 @@ driver:
   name: vagrant
 
 vagrant:
-  platforms:
-    - name: trusty64
-      box: ncg/trusty64
 
+  # Comment raw_config_args to test trusty
+  raw_config_args:
+    - "ssh.username = 'ubuntu'"
+
+  platforms:
     - name: xenial64
-      box: ncg/xenial64
+      box: xenial64
+      box_url: https://s3.amazonaws.com/tech-only.dev.mnn.com/Vagrant/ncg-xenial.box
+
+    - name: trusty64
+      box: ubuntu/trusty64
 
   providers:
     - name: virtualbox
@@ -37,6 +43,8 @@ verifier:
   name: testinfra
 
 ansible:
+  playbook: tests/playbook.yml
+  sudo: False
 
   group_vars:
     pagespeed:

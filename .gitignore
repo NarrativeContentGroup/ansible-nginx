@@ -5,3 +5,4 @@
 .molecule
 .vagrant
 tests/.cache/
+playbook.retry
