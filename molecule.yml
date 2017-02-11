@@ -34,9 +34,6 @@ vagrant:
 
   instances:
     - name: mnn.nginx-01
-      ansible_groups:
-        - pagespeed
-
     - name: mnn.nginx-02
 
 verifier:
@@ -46,6 +43,6 @@ ansible:
   playbook: tests/playbook.yml
   sudo: False
 
-  group_vars:
-    pagespeed:
-      - nginx_pagespeed_enabled: true
+  host_vars:
+    mnn.nginx-01:
+      nginx_pagespeed_enabled: true
