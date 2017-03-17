@@ -14,13 +14,12 @@ driver:
 vagrant:
 
   # Comment raw_config_args to test trusty
-  raw_config_args:
-    - "ssh.username = 'ubuntu'"
+  # raw_config_args:
+  #   - "ssh.username = 'ubuntu'"
 
   platforms:
     - name: xenial64
-      box: xenial64
-      box_url: https://s3.amazonaws.com/tech-only.dev.mnn.com/Vagrant/ncg-xenial.box
+      box: bento/xenial64
 
     - name: trusty64
       box: ubuntu/trusty64
