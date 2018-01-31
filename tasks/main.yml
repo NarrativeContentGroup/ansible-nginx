@@ -20,42 +20,42 @@
 
 - block:
 
-  - name: check nginx pagespeed directory
-    stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
-    register: nginx_pagespeed_module
+    - name: check nginx pagespeed directory
+      stat: path={{ nginx_build_dir }}/{{ nginx_pagespeed_url|basename }}
+      register: nginx_pagespeed_module
 
-  - name: Download nginx pagespeed module
-    get_url: url={{ nginx_pagespeed_url }}
-             dest={{ nginx_build_dir }}
-             mode=0440
+    - name: Download nginx pagespeed module
+      get_url: url={{ nginx_pagespeed_url }}
+               dest={{ nginx_build_dir }}
+               mode=0440
 
-    when: not nginx_pagespeed_module.stat.exists
-    register: nginx_pagespeed_module_dl
+      when: not nginx_pagespeed_module.stat.exists
+      register: nginx_pagespeed_module_dl
 
-  - name: unpack nginx pagespeed module
-    unarchive: copy=no
-               dest={{ nginx_build_dir }}/
-               src={{ nginx_pagespeed_module_dl.dest }}
-    when: nginx_pagespeed_module_dl.changed
-    register: nginx_pagespeed_module_unpack
+    - name: unpack nginx pagespeed module
+      unarchive: copy=no
+                 dest={{ nginx_build_dir }}/
+                 src={{ nginx_pagespeed_module_dl.dest }}
+      when: nginx_pagespeed_module_dl.changed
+      register: nginx_pagespeed_module_unpack
 
-  - name: check nginx psol directory
-    stat: path={{ nginx_build_dir }}/{{ nginx_psol_url|basename }}
-    register: nginx_psol
+    - name: check nginx psol directory
+      stat: path={{ nginx_build_dir }}/{{ nginx_psol_url|basename }}
+      register: nginx_psol
 
-  - name: download pagespeed library
-    get_url: url={{ nginx_psol_url }}
-             dest={{ nginx_build_dir }}
+    - name: download pagespeed library
+      get_url: url={{ nginx_psol_url }}
+               dest={{ nginx_build_dir }}
 
-    when: not nginx_psol.stat.exists
-    register: nginx_psol_dl
+      when: not nginx_psol.stat.exists
+      register: nginx_psol_dl
 
-  - name: unpack pagespeed library
-    unarchive: copy=no
-               dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
-               src={{ nginx_psol_dl.dest }}
-    when: nginx_psol_dl.changed
-    register: nginx_psol_unpack
+    - name: unpack pagespeed library
+      unarchive: copy=no
+                 dest={{ nginx_build_dir }}/ngx_pagespeed-release-{{ nginx_pagespeed_version }}-beta/
+                 src={{ nginx_psol_dl.dest }}
+      when: nginx_psol_dl.changed
+      register: nginx_psol_unpack
 
   when: nginx_pagespeed_enabled
 
