@@ -75,6 +75,8 @@
              src={{ nginx_source_dl.dest }}
   when: nginx_source_dl.changed
   register: nginx_source_unpack
+  tags:
+    - skip_ansible_lint
 
 - name: Configure Nginx source (pagespeed)
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --add-module={{ nginx_pagespeed_build_dir }} --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro'
@@ -84,6 +86,8 @@
         nginx_psol_unpack|changed or
         nginx_source_unpack|changed)
   register: nginx_configure_pagespeed
+  tags:
+    - skip_ansible_lint
 
 - name: Configure Nginx source
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro'
@@ -91,6 +95,8 @@
   when: not nginx_pagespeed_enabled and
         nginx_source_unpack|changed
   register: nginx_configure
+  tags:
+    - skip_ansible_lint
 
 - name: Install Nginx
   become: yes
@@ -100,6 +106,8 @@
   notify:
     - restart nginx
     - restart nginx - xenial
+  tags:
+    - skip_ansible_lint
 
 - name: Install Nginx init script
   become: yes
