@@ -1,0 +1,6 @@
+---
+- name: Converge
+  hosts: all
+  roles:
+    - role: mnn.nginx
+      nginx_pagespeed_enabled: true
