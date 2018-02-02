@@ -15,8 +15,8 @@
   become: yes
   file: state=directory
         path={{ nginx_build_dir }}
-        owner={{ ansible_ssh_user }}
-        group={{ ansible_ssh_user }}
+        owner={{ ansible_user_id }}
+        group={{ ansible_user_id }}
 
 - block:
 
