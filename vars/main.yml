@@ -20,4 +20,4 @@ nginx_psol_url: https://dl.google.com/dl/page-speed/psol/{{ nginx_pagespeed_vers
 nginx_pagespeed_url: https://github.com/apache/incubator-pagespeed-ngx/archive/v{{ nginx_pagespeed_version }}-{{ nginx_pagespeed_version_label }}.zip
 nginx_url: http://nginx.org/download/nginx-{{ nginx_version }}.tar.gz
 
-nginx_pagespeed_build_dir: '{{ nginx_build_dir }}/incubator-pagespeed-ngx-release-{{ nginx_pagespeed_version }}-{{ nginx_pagespeed_version_label }}/'
+nginx_pagespeed_build_dir: '{{ nginx_build_dir }}/incubator-pagespeed-ngx-{{ nginx_pagespeed_version }}-{{ nginx_pagespeed_version_label }}/'
