@@ -2,8 +2,8 @@
 # tasks file for mnn.nginx
 
 - name: Install apt requirements
-  become: yes
-  apt: name={{ item }} update_cache=yes
+  become: 'yes'
+  apt: name={{ item }} update_cache='yes'
   with_items:
     - build-essential
     - zlib1g-dev
@@ -12,7 +12,7 @@
     - unzip
 
 - name: create build path
-  become: yes
+  become: 'yes'
   file: state=directory
         path={{ nginx_build_dir }}
         owner={{ ansible_user_id }}
@@ -99,7 +99,7 @@
     - skip_ansible_lint
 
 - name: Install Nginx
-  become: yes
+  become: 'yes'
   shell: make && make install
          chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: nginx_configure|changed or nginx_configure_pagespeed|changed
@@ -110,13 +110,13 @@
     - skip_ansible_lint
 
 - name: Install Nginx init script
-  become: yes
+  become: 'yes'
   template: src=nginx.init
             dest=/etc/init.d/nginx
             mode=0755
 
 - name: Create required nginx dirs
-  become: yes
+  become: 'yes'
   file: path={{ item }}
         state=directory
   with_items:
@@ -124,15 +124,15 @@
     - /var/lib/nginx
 
 - name: Configure Nginx
-  become: yes
+  become: 'yes'
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
 
 - name: Configure Nginx init (systemd)
-  become: yes
+  become: 'yes'
   template: src=nginx.service dest=/lib/systemd/system/nginx.service
   when: ansible_distribution_release == 'xenial'
 
 - name: Create sites-enabled
-  become: yes
+  become: 'yes'
   file: state=directory
         path=/etc/nginx/sites-enabled
