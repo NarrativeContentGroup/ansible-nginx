@@ -126,6 +126,9 @@
 - name: Configure Nginx
   become: 'yes'
   template: src=nginx.conf dest=/etc/nginx/nginx.conf
+  notify:
+    - reload nginx
+    - reload nginx - xenial
 
 - name: Configure Nginx init (systemd)
   become: 'yes'
