@@ -19,6 +19,6 @@ nginx_build_options:
 nginx_pagespeed_version: 1.12.34.2
 nginx_pagespeed_version_label: stable
 nginx_user: www-data
-nginx_version: 1.14.0
+nginx_version: 1.10.1
 nginx_worker_processes: 2
 nginx_pagespeed_enabled: false
