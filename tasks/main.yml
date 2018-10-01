@@ -92,7 +92,7 @@
   command: ./configure {{ nginx_build_options_defaults|combine(nginx_build_options)|dict2opts }} --with-cc-opt='-g -O2 -fstack-protector --param=ssp-buffer-size=4 -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2' --with-ld-opt='-Wl,-Bsymbolic-functions -Wl,-z,relro'
            chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
   when: not nginx_pagespeed_enabled and
-        nginx_source_unpack|changed
+        nginx_source_unpack is changed
   register: nginx_configure
   tags:
     - skip_ansible_lint
@@ -101,7 +101,7 @@
   become: 'yes'
   shell: make && make install
          chdir={{ nginx_build_dir }}/nginx-{{ nginx_version }}
-  when: nginx_configure|changed or nginx_configure_pagespeed|changed
+  when: nginx_configure is changed or nginx_configure_pagespeed is changed
   notify:
     - restart nginx
     - restart nginx - xenial
