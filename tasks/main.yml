@@ -1,5 +1,4 @@
 ---
-# tasks file for mnn.nginx
 
 - name: Install apt requirements
   become: 'yes'
