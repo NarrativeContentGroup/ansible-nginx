@@ -10,4 +10,4 @@ install:
   - pip install molecule
   - pip install docker
 script:
-  - molecule --debug test --all
+  - molecule test --all
