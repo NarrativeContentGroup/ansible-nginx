@@ -16,9 +16,10 @@ nginx_build_options:
   with-ipv6:
   with-pcre-jit:
 
-nginx_pagespeed_version: 1.12.34.2
+nginx_pagespeed_version: 1.12.34.3
 nginx_pagespeed_version_label: stable
+nginx_psol_version: 1.12.34.2
 nginx_user: www-data
-nginx_version: 1.10.1
+nginx_version: 1.14.0
 nginx_worker_processes: 2
 nginx_pagespeed_enabled: false
