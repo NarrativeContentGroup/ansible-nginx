@@ -1,6 +1,7 @@
 ---
 # defaults file for mnn.nginx-pagespeed
 
+nginx_conf: nginx.conf
 nginx_conf_path: /etc/nginx/nginx.conf
 nginx_lib_path: /var/lib/nginx
 nginx_lock_file: /var/lock/nginx.lock
