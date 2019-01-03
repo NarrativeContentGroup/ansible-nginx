@@ -101,7 +101,7 @@
   when: nginx_configure is changed or nginx_configure_pagespeed is changed
   notify:
     - restart nginx
-    - restart nginx - xenial
+    - restart nginx [systemd]
 
 - name: Install Nginx init script
   become: 'yes'
@@ -122,12 +122,12 @@
   template: src={{ nginx_conf }} dest=/etc/nginx/nginx.conf
   notify:
     - reload nginx
-    - reload nginx - xenial
+    - reload nginx [systemd]
 
 - name: Configure Nginx init (systemd)
   become: 'yes'
   template: src=nginx.service dest=/lib/systemd/system/nginx.service
-  when: ansible_distribution_release == 'xenial'
+  when: ansible_distribution_release == 'bionic'
 
 - name: Create sites-enabled
   become: 'yes'

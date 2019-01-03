@@ -10,7 +10,7 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - trusty
-        - xenial
+        - bionic
 
   categories:
     - cloud

@@ -8,8 +8,10 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: instance
+  - name: trusty
     image: ubuntu:trusty
+  - name: bionic
+    image: ubuntu:bionic
 provisioner:
   name: ansible
   lint:
