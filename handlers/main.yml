@@ -8,7 +8,8 @@
 - name: reload nginx [systemd]
   become: 'yes'
   systemd: name=nginx state=reloaded enabled=yes
-  when: ansible_distribution_release == 'bionic'
+  when: ansible_distribution_release == 'bionic' or
+        ansible_distribution_release == 'xenial'
 
 - name: restart nginx
   become: 'yes'
@@ -18,4 +19,5 @@
 - name: restart nginx [systemd]
   become: 'yes'
   systemd: name=nginx state=restarted enabled=yes
-  when: ansible_distribution_release == 'bionic'
+  when: ansible_distribution_release == 'bionic' or
+        ansible_distribution_release == 'xenial'
