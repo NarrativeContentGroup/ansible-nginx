@@ -7,7 +7,7 @@ def dict2opts(d):
 
     opts = []
 
-    for key, value in d.iteritems():
+    for key, value in d.items():
         option = '--{}'.format(key)
         if value:
             option = '{}={}'.format(option, value)
